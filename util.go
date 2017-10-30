@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/yosemite-open/go-adb/internal/errors"
+	"github.com/matt-e/go-adb/internal/errors"
 )
 
 var (

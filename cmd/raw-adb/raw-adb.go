@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/yosemite-open/go-adb/wire"
+	"github.com/matt-e/go-adb/wire"
 	"github.com/zach-klippenstein/goadb"
 )
 
