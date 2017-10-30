@@ -10,6 +10,7 @@ import (
 type DeviceInfo struct {
 	// Always set.
 	Serial string
+	State  DeviceState
 
 	// Product, device, and model are not set in the short form.
 	Product    string
@@ -18,6 +19,9 @@ type DeviceInfo struct {
 
 	// Only set for devices connected via USB.
 	Usb string
+
+	// Set to 'device' usually, but have observed 'unauthorized' or 'offline'
+	Flag string
 }
 
 // IsUsb returns true if the device is connected via USB.
@@ -25,13 +29,14 @@ func (d *DeviceInfo) IsUsb() bool {
 	return d.Usb != ""
 }
 
-func newDevice(serial string, attrs map[string]string) (*DeviceInfo, error) {
+func newDevice(serial string, state DeviceState, attrs map[string]string) (*DeviceInfo, error) {
 	if serial == "" {
 		return nil, errors.AssertionErrorf("device serial cannot be blank")
 	}
 
 	return &DeviceInfo{
 		Serial:     serial,
+		State:      state,
 		Product:    attrs["product"],
 		Model:      attrs["model"],
 		DeviceInfo: attrs["device"],
@@ -61,18 +66,28 @@ func parseDeviceShort(line string) (*DeviceInfo, error) {
 			"malformed device line, expected 2 fields but found %d", len(fields))
 	}
 
-	return newDevice(fields[0], map[string]string{})
+	state, err := parseDeviceState(fields[1])
+	if err != nil {
+		return nil, err
+	}
+
+	return newDevice(fields[0], state, map[string]string{})
 }
 
 func parseDeviceLong(line string) (*DeviceInfo, error) {
 	fields := strings.Fields(line)
-	if len(fields) < 5 {
+	if len(fields) < 2 {
 		return nil, errors.Errorf(errors.ParseError,
 			"malformed device line, expected at least 5 fields but found %d", len(fields))
 	}
 
+	state, err := parseDeviceState(fields[1])
+	if err != nil {
+		return nil, err
+	}
+
 	attrs := parseDeviceAttributes(fields[2:])
-	return newDevice(fields[0], attrs)
+	return newDevice(fields[0], state, attrs)
 }
 
 func parseDeviceAttributes(fields []string) map[string]string {
