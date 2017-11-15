@@ -299,6 +299,18 @@ func (c *Device) OpenRead(path string) (io.ReadCloser, error) {
 	return reader, wrapClientError(err, c, "OpenRead(%s)", path)
 }
 
+func (c *Device) Reboot() error {
+	conn, err := c.dialDevice()
+	if err != nil {
+		return wrapClientError(err, c, "Reboot")
+	}
+	defer conn.Close()
+
+	return wrapClientError(
+		conn.RoundTripSingleNoResponse([]byte("reboot:")),
+		c, "Reboot")
+}
+
 // OpenWrite opens the file at path on the device, creating it with the permissions specified
 // by perms if necessary, and returns a writer that writes to the file.
 // The files modification time will be set to mtime when the WriterCloser is closed. The zero value
