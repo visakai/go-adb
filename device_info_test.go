@@ -20,7 +20,7 @@ func TestParseDeviceShort(t *testing.T) {
 	dev, err := parseDeviceShort("192.168.56.101:5555	device\n")
 	assert.NoError(t, err)
 	assert.Equal(t, &DeviceInfo{
-		Serial: "192.168.56.101:5555"}, dev)
+		Serial: "192.168.56.101:5555", State: StateOnline}, dev)
 }
 
 func TestParseDeviceLong(t *testing.T) {
@@ -28,6 +28,7 @@ func TestParseDeviceLong(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, &DeviceInfo{
 		Serial:     "SERIAL",
+		State:      StateOnline,
 		Product:    "PRODUCT",
 		Model:      "MODEL",
 		DeviceInfo: "DEVICE"}, dev)
@@ -41,5 +42,6 @@ func TestParseDeviceLongUsb(t *testing.T) {
 		Product:    "PRODUCT",
 		Model:      "MODEL",
 		DeviceInfo: "DEVICE",
+		State:      StateOnline,
 		Usb:        "1234"}, dev)
 }
