@@ -5,7 +5,7 @@ test: generate
 
 generate:
 	# stringer requires the packages to be installed.
-	go install -v
+	go install -v golang.org/x/tools/cmd/stringer@latest
 	go generate -x ./...
 
 get-deps:
