@@ -86,7 +86,18 @@ func parseDeviceLong(line string) (*DeviceInfo, error) {
 		return nil, err
 	}
 
-	attrs := parseDeviceAttributes(fields[2:])
+	attrs := map[string]string{}
+	if strings.HasPrefix(fields[2], "product:") {
+		//fields[2] is product info, means the output comes from emulators
+		attrs = parseDeviceAttributes(fields[2:])
+	} else {
+		usb := fields[2] // libusb's USB backend implementation
+		if strings.HasPrefix(usb, "usb:") {
+			usb = usb[4:] // ADB's USB backend implementation
+		}
+		attrs = parseDeviceAttributes(fields[3:])
+		attrs["usb"] = usb
+	}
 	return newDevice(fields[0], state, attrs)
 }
 

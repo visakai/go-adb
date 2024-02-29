@@ -45,3 +45,15 @@ func TestParseDeviceLongUsb(t *testing.T) {
 		State:      StateOnline,
 		Usb:        "1234"}, dev)
 }
+
+func TestParseDeviceLongLibusb(t *testing.T) {
+	dev, err := parseDeviceLong("SERIAL    device 2-1.1 product:PRODUCT model:MODEL device:DEVICE transport_id:5 \n")
+	assert.NoError(t, err)
+	assert.Equal(t, &DeviceInfo{
+		Serial:     "SERIAL",
+		Product:    "PRODUCT",
+		Model:      "MODEL",
+		DeviceInfo: "DEVICE",
+		State:      StateOnline,
+		Usb:        "2-1.1"}, dev)
+}
