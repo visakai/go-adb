@@ -11,6 +11,4 @@ generate:
 	go generate -x ./...
 
 get-deps:
-	go get -t -v ./...
-	go get -u golang.org/x/tools/cmd/stringer
 	go mod tidy
